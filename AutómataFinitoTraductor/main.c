@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MaxL 50 //Lineas max de fichero.
+#define MaxC 25 //Maximos caracteres por linea.
 
 int imprimirMenu();//Donde se elige el apartado a probar.
 
@@ -13,7 +15,9 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca las palabras de
 //###################################################################################################################################################
 int main()
 {
-    printf("Hello world!\n");
+    char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
+    borrarConsola();
+    aperturaFichero(fichero,imprimirMenu());
     return 0;
 }
 
@@ -26,9 +30,9 @@ int imprimirMenu()//######################### IMPRIMIR MENU ####################
  int opcion;
 
  printf("\tMENU PRINCIPAL\n\n");
- printf("\t(1) Apartado 'a)'\n\n");
- printf("\t(2) Apartado 'b)'\n\n");
- printf("\t(3) Apartado 'c)'\n\n");
+ printf("\t(1) Apartado 'A'\n\n");
+ printf("\t(2) Apartado 'B'\n\n");
+ printf("\t(3) Apartado 'C'\n\n");
  printf("\t(0) Salir\n\n");//Por si el usuario queria finalizar pero se equivoca y elige volver al menu principal.
  printf("\nElija el apartado que quiera probar mediante '1', '2', '3', o '0' para salir: ");
  scanf("%d",&opcion);
