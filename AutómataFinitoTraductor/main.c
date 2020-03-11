@@ -21,6 +21,8 @@ typedef struct
 }AFDT;
 
 
+
+
 //###################################################################################################################################################
 //################################################################################# MAIN ############################################################
 //###################################################################################################################################################
@@ -28,8 +30,10 @@ int main()
 {
     char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
-    //AFDT d1;
-    aperturaFichero(fichero,imprimirMenu());
+    char cad [55];
+    scanf("%s",cad);
+    printf(cad);
+    //aperturaFichero(fichero,imprimirMenu());
     return 0;
 }
 
@@ -64,36 +68,36 @@ void borrarConsola()//#### BORRAR CONSOLA ######################################
 
 void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## APERTURA DE FICHERO ###############################
 {
-int i=0;
-FILE *F;
-switch( opcion )
- {
-  case 1: F = fopen ("Apartado1.txt","r");
+  int i=0;
+  FILE *F;
+  switch( opcion )
+   {
+    case 1: F = fopen ("Apartado1.txt","r");
           break;
 
-  case 2: F = fopen ("Apartado2.txt","r");
+    case 2: F = fopen ("Apartado2.txt","r");
           break;
 
-  case 3: F = fopen ("Apartado.txt","r");
+    case 3: F = fopen ("Apartado.txt","r");
           break;
 
-  case 0: exit(0);//Comando para terminar la ejecucion entera del programa
+    case 0: exit(0);//Comando para terminar la ejecucion entera del programa
           break;
- }
-if (F==NULL)
- {
+  }
+ if (F==NULL)
+  {
     printf("\n\t\tERROR:el fichero no se ha abierto correctamente\n");
     exit (EXIT_FAILURE);
- }
-else
- {
-  //el fichero se ha abierto correctamente
-  fscanf(F,"%s",fichero[i]);
-  while(!feof(F))
-   {
+  }
+ else
+  {
+   //el fichero se ha abierto correctamente
+   fscanf(F,"%s",fichero[i]);
+   while(!feof(F))
+    {
      i++;
      fscanf(F,"%s",fichero[i]);
-   }
-  fclose(F);
- }
+    }
+   fclose(F);
+  }
 }
