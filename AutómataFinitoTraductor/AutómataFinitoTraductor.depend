@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1583953090 source:c:\users\gonza\desktop\universidad-\3º curso\2º cuatri\tlp\practica 1\autómatafinitotraductor\main.c
+	<stdio.h>
+	<stdlib.h>
+

@@ -9,11 +9,16 @@ void borrarConsola();//Despeja la consola.
 
 void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca las palabras del .txt y las copia en la matriz fichero.
 
-struct AFDT
+enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
-     bool esFinal;
+	FALSE, TRUE
+};
+
+typedef struct
+{
+     enum Boolean esFinal;
      int numeroEstado;
-}
+}AFDT;
 
 
 //###################################################################################################################################################
@@ -23,6 +28,7 @@ int main()
 {
     char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
+    AFDT d1;
     aperturaFichero(fichero,imprimirMenu());
     return 0;
 }
@@ -68,7 +74,7 @@ switch( opcion )
   case 2: F = fopen ("Apartado2.txt","r");
           break;
 
-  case 3: F = fopen ("Apartado3.txt","r");
+  case 3: F = fopen ("Apartado.txt","r");
           break;
 
   case 0: exit(0);//Comando para terminar la ejecucion entera del programa
@@ -77,7 +83,7 @@ switch( opcion )
 if (F==NULL)
  {
     printf("\n\t\tERROR:el fichero no se ha abierto correctamente\n");
-    exit(0);
+    exit (EXIT_FAILURE);
  }
 else
  {
