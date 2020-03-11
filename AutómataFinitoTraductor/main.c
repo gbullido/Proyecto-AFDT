@@ -30,9 +30,6 @@ int main()
 {
     char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
-    char cad [55];
-    scanf("%s",cad);
-    printf(cad);
     //aperturaFichero(fichero,imprimirMenu());
     return 0;
 }
