@@ -28,7 +28,7 @@ int main()
 {
     char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
-    AFDT d1;
+    //AFDT d1;
     aperturaFichero(fichero,imprimirMenu());
     return 0;
 }
