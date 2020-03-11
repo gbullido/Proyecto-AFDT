@@ -9,6 +9,12 @@ void borrarConsola();//Despeja la consola.
 
 void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca las palabras del .txt y las copia en la matriz fichero.
 
+struct AFDT
+{
+     bool esFinal;
+     int numeroEstado;
+}
+
 
 //###################################################################################################################################################
 //################################################################################# MAIN ############################################################
