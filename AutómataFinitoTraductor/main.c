@@ -11,6 +11,8 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca el AFDT del .tx
 
 void vaciar(char temp[]);//Rellena un vector de nulos
 
+void asignarMemoriaTransTraduDest(int n,int i);//Asignar el tamaño a los diferentes vectores dinamicos del struct AFDT, tras saber el numero de transiciones.
+
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
 	FALSE, TRUE
@@ -118,10 +120,23 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
    {
       vaciar(temp);//Primeros debemos vaciar temp.
       traductor[i].nombreEstado=i;
-      aux=fgetc(F);//Leemos la primera letra de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
+      aux=fgetc(F);//Leemos el primer caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
       if(aux=='n') traductor[i].esFinal=FALSE;
       else if('f') traductor[i].esFinal=TRUE;
-      aux=fgetc(F);//Leemos la segunda letra de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
+      aux=fgetc(F);//Leemos el segundo caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
+      if(aux=='-')//Esta linea/estado si tiene transiciones.
+      {
+         aux=fgetc(F);//Leemos el tercer caracter de una linea y el cursor se queda tras ella, en este caso nos indica cuantas transiciones tiene esta linea estado.
+         for(j=0;aux>='0'&&aux<='9';j++)//Ya que pueden existir mas de 9 transiciones
+          {
+             temp[j]=aux;
+             aux=fgetc(F);//Lee siguiente caracter
+          }
+          asignarMemoriaTransTraduDest(atoi(temp),i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
+          if()
+
+
+      }
 
       /*for(j=0;aux!='-'&&'*';j++)
        {
@@ -138,5 +153,12 @@ void vaciar(char temp[])
      {
         temp[i]='\0';
      }
+}
+
+void asignarMemoriaTransTraduDest(int n,int i)
+{
+    traductor[i].transiciones = (char*)malloc(n*sizeof(char));
+    traductor[i].cad = (traducciones*)malloc(n*sizeof(traducciones));
+    traductor[i].destinos = (int*)malloc(n*sizeof(int));
 }
 
