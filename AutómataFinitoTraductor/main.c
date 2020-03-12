@@ -18,7 +18,7 @@ enum Boolean//Los boleanos no existen en C tienes que crearlos.
 
 typedef struct
 {
-    char *traduccion;
+    char *traduccion;//cadena de caracteres con la traduccion
 }traducciones;
 
 typedef struct
@@ -119,6 +119,9 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
       vaciar(temp);//Primeros debemos vaciar temp.
       traductor[i].nombreEstado=i;
       aux=fgetc(F);//Leemos la primera letra de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
+      if(aux=='n') traductor[i].esFinal=FALSE;
+      else if('f') traductor[i].esFinal=TRUE;
+      aux=fgetc(F);//Leemos la segunda letra de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
 
       /*for(j=0;aux!='-'&&'*';j++)
        {
