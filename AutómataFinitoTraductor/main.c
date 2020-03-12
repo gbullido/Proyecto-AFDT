@@ -26,6 +26,7 @@ typedef struct
 
 typedef struct
 {
+     int numeroEstadosAFDT;
      enum Boolean esFinal;
      int nombreEstado;
      char *transiciones;//Guarda las transiciones que salen del estado
@@ -41,10 +42,10 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado
 //###################################################################################################################################################
 int main()
 {
-    //char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
     aperturaFichero(imprimirMenu());
-    free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+    printf("---%d-----",traductor[0].numeroEstadosAFDT);
+    //free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
 
     return 0;
 }
@@ -113,6 +114,8 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
 
  //Como ya conocemos el numero de estados del AFDT,asignamos al vector traductor el tamaño justo.
  traductor=(AFDT*)malloc(cont*sizeof(AFDT));
+ traductor[0].numeroEstadosAFDT=cont;
+ printf("---%d-----",traductor[0].numeroEstadosAFDT);
  if(traductor==NULL)//Comprobamos que se reservo la memoria correctamente
   {
     printf("No se ha podido reservar la memoria.\n");
