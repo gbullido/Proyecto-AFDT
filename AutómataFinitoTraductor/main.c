@@ -92,7 +92,7 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
     case 2: F = fopen ("Apartado2.txt","r");
           break;
 
-    case 3: F = fopen ("Apartado.txt","r");
+    case 3: F = fopen ("Apartado3.txt","r");
           break;
 
     case 0: exit(0);//Comando para terminar la ejecucion entera del programa
@@ -115,7 +115,7 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
  //Como ya conocemos el numero de estados del AFDT,asignamos al vector traductor el tamaño justo.
  traductor=(AFDT*)malloc(cont*sizeof(AFDT));
  traductor[0].numeroEstadosAFDT=cont;
- printf("---%d-----",traductor[0].numeroEstadosAFDT);
+ printf("---%d-----",traductor[0].numeroEstadosAFDT);//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
  if(traductor==NULL)//Comprobamos que se reservo la memoria correctamente
   {
     printf("No se ha podido reservar la memoria.\n");
@@ -123,21 +123,26 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
   }
  for(i=0; !feof(F); i++)
    {
+       printf("\n\n++0++%d++0++\n\n",i);
       vaciar(temp);//Primeros debemos vaciar temp.
       vaciar(aux);
       traductor[i].nombreEstado=i;
+      printf("\n\n++1++%d++1++\n\n",i);
       aux[0]=fgetc(F);//Leemos el primer caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
       if(aux[0]=='n') traductor[i].esFinal=FALSE;
       else if(aux[0]=='f') traductor[i].esFinal=TRUE;
       aux[0]=fgetc(F);//Leemos el segundo caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
+       printf("\n\n++2++%d++2++\n\n",i);
       if(aux[0]=='-')//Esta linea/estado si tiene transiciones.
        {
+           printf("\n\n++3++%d++3++\n\n",i);
          aux[0]=fgetc(F);//Leemos el tercer caracter de una linea y el cursor se queda tras ella, en este caso nos indica cuantas transiciones tiene esta linea estado.
          for(j=0;aux[0]>='0'&&aux[0]<='9';j++)//Ya que pueden existir mas de 9 transiciones
           {
              temp[j]=aux[0];
              aux[0]=fgetc(F);//Lee siguiente caracter
           }
+           printf("\n\n++4++%d++4++\n\n",i);
           n=atoi(temp);
           asignarMemoriaTransTraduDest(n,i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
           //Tras salir del for tenemos en aux el simbolo de la primera transicion, de esta linea/estado.
@@ -145,13 +150,20 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
           fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           strcat(aux,temp);
           rellenarVectores(aux,i,n);
+           printf("\n\n++5++%d++5++\n\n",i);
+          if(feof(F)) printf("\n\nSE CUMPLE CON i = %d\n\n",i);
+          else  printf("\n\nNO SE CUMPLE CON i = %d\n\n",i);
        }
       else if(aux[0]=='*')//Esta linea estado no tiene transiciones
        {
             asignarMemoriaTransTraduDest(0,i);
+            printf("\n\n dentro if *:%d-----",traductor[0].numeroEstadosAFDT);//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
        }
+     printf("\n\n dentro for linea 153 :%d-----",traductor[0].numeroEstadosAFDT);//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
    }
+ printf("\n\n ANTES del fclose:%d-----",traductor[0].numeroEstadosAFDT);//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
  fclose(F);
+  printf("\n\ndespues de fclose:%d-----",traductor[0].numeroEstadosAFDT);//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 }
 
 void vaciar(char c[])
