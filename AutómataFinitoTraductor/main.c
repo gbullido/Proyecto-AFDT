@@ -13,6 +13,8 @@ void vaciar(char temp[]);//Rellena un vector de nulos
 
 void asignarMemoriaTransTraduDest(int n,int i);//Asignar el tamaño a los diferentes vectores dinamicos del struct AFDT, tras saber el numero de transiciones.
 
+void rellenarVectores(char aux,char temp[],int i,int n);//rellena los vectores dinamicos con la informacion pertinente
+
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
 	FALSE, TRUE
@@ -78,7 +80,7 @@ void borrarConsola()//#### BORRAR CONSOLA ######################################
 
 void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## APERTURA DE FICHERO ###############################
 {
-  int i,j,cont=0;//Cuenta el numero de lineas(estados) del .txt
+  int i,j,n,cont=0;//Cuenta el numero de lineas(estados) del .txt
   char aux,temp[50];
   FILE *F;
   switch( opcion )
@@ -132,17 +134,18 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
              temp[j]=aux;
              aux=fgetc(F);//Lee siguiente caracter
           }
-          asignarMemoriaTransTraduDest(atoi(temp),i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
-          if()
+          n=atoi(temp);
+          asignarMemoriaTransTraduDest(n,i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
+          //Tras salir de while tenemos en aux la el primer simbolo de la primera transicion.
+          vaciar(temp);//reseteamos temp.
+          fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
+          rellenarVectores(aux,temp,i,n);
+
+
 
 
       }
-
-      /*for(j=0;aux!='-'&&'*';j++)
-       {
-           aux=fgetc(F);//Lee letra a letra
-
-       }*/
+      //else if(aux='*')
    }
 }
 
@@ -158,7 +161,45 @@ void vaciar(char temp[])
 void asignarMemoriaTransTraduDest(int n,int i)
 {
     traductor[i].transiciones = (char*)malloc(n*sizeof(char));
+    if(traductor[i].transiciones==NULL)//Comprobamos que se reservo la memoria correctamente
+     {
+        printf("No se ha podido reservar la memoria.\n");
+        exit (1);
+     }
     traductor[i].cad = (traducciones*)malloc(n*sizeof(traducciones));
+    if(traductor[i].cad==NULL)//Comprobamos que se reservo la memoria correctamente
+     {
+        printf("No se ha podido reservar la memoria.\n");
+        exit (1);
+     }
     traductor[i].destinos = (int*)malloc(n*sizeof(int));
+    if(traductor[i].destinos==NULL)//Comprobamos que se reservo la memoria correctamente
+     {
+        printf("No se ha podido reservar la memoria.\n");
+        exit (1);
+     }
+}
+
+void rellenarVectores(char aux,char temp[],int i,int n)
+{
+ int j,k;
+ for(j=0;j<n;j++)//for de numero de transiciones
+  {
+     if(n==0)
+      {
+        strcpy(traductor[i].transiciones[j],aux);//metemos el primer simbolo de la primera transicion
+        for(k=0;temp[k]!=','&&'\0';k++)
+         {
+
+         }
+      }
+     else
+      {
+        if(temp[j-1]=='/')
+         {
+            if(temp[j]=='!')
+         }
+      }
+  }
 }
 
