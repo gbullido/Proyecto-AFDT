@@ -1,4 +1,4 @@
-n-a/x:1
-n-a/x:3,b/cccc:2
-n-a/x:3,b/c:2
+n-a/!:1
+n-a/!:3,b/cccc:2
+n-a/!:3,b/c:2
 f*
