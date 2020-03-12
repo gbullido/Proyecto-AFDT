@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MaxL 50 //Lineas max de fichero.
-#define MaxC 25 //Maximos caracteres por linea.
 
 int imprimirMenu();//Donde se elige el apartado a probar.
 
@@ -182,17 +180,25 @@ void asignarMemoriaTransTraduDest(int n,int i)
 
 void rellenarVectores(char aux,char temp[],int i,int n)
 {
- int j,k;
+ int j,k,m;
  for(j=0;j<n;j++)//for de numero de transiciones
   {
-     if(j==0)
+     if(j==0)//Caso particular `pues temp empieza por el primer '/' y no por el 1º simbolo de la 1º transicion
       {
-        strcpy(traductor[i].transiciones[j],aux);//metemos el primer simbolo de la primera transicion
-        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp
+        traductor[i].transiciones[j]=aux;//metemos el primer simbolo de la primera transicion
+        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp que empieza con '/'
          {
              if(temp[k-1]=='/')
               {
-                if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));
+                if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
+                else if(temp[k]!='!')
+                 {
+                    for(m=k;temp[m]!=':',m++)
+                     {
+
+                     }
+                 }
+
               }
          }
       }
