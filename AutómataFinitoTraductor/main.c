@@ -25,7 +25,7 @@ typedef struct
      int *destinos;//Guarda el destino de cada transicion respectivamente
 }AFDT;
 
-AFDT *traductor;
+AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado
 
 
 //###################################################################################################################################################
@@ -102,7 +102,7 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
   }
  rewind(F);//Devuelve el puntero F al principio del fichero
 
- //Como ya conocemos el numero de estados del AFDT,crearemos un vector de ese tamaño justo.
+ //Como ya conocemos el numero de estados del AFDT,asignamos al vector traductor el tamaño justo.
  traductor=(AFDT*)malloc(cont*sizeof(AFDT));
  if(traductor==NULL)//Comprobamos que se reservo la memoria correctamente
   {
@@ -112,14 +112,14 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
 
   for(i=0; !feof(F); i++)
    {
-      //Primeros debemos vaciar temp.
-      vaciar(temp);
-      aux='0';//Ya que no esta inicializada
-      for(j=0;aux!='-'&&'*';j++)
+      vaciar(temp);//Primeros debemos vaciar temp.
+      aux=fgetc(F);//Leemos la primera letra de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
+
+      /*for(j=0;aux!='-'&&'*';j++)
        {
            aux=fgetc(F);//Lee letra a letra
 
-       }
+       }*/
    }
 }
 
