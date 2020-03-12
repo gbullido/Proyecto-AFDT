@@ -20,7 +20,7 @@ typedef struct
      int numeroEstado;
 }AFDT;
 
-
+AFDT *traductor;
 
 
 //###################################################################################################################################################
@@ -30,7 +30,8 @@ int main()
 {
     char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
-    //aperturaFichero(fichero,imprimirMenu());
+
+    aperturaFichero(fichero,imprimirMenu());
     return 0;
 }
 
@@ -65,7 +66,8 @@ void borrarConsola()//#### BORRAR CONSOLA ######################################
 
 void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## APERTURA DE FICHERO ###############################
 {
-  int i=0;
+  int cont=0;//Cuenta el numero de lineas(estados) del .txt
+  char temp[50];
   FILE *F;
   switch( opcion )
    {
@@ -86,15 +88,14 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
     printf("\n\t\tERROR:el fichero no se ha abierto correctamente\n");
     exit (EXIT_FAILURE);
   }
- else
+ //el fichero se ha abierto correctamente
+ while(!feof(F))
   {
-   //el fichero se ha abierto correctamente
-   fscanf(F,"%s",fichero[i]);
-   while(!feof(F))
-    {
-     i++;
-     fscanf(F,"%s",fichero[i]);
-    }
-   fclose(F);
+   fgets(temp,50,F);//Lee una linea hasta encontrar'\n' o llegar a 50 en este caso y deja el puntero al inicio de la siguiente
+   cont++;//Cada aumento es una linea/estado más.
+   //Cada ciclo del while sobreescribe temp añadiendo al final un nulo.
   }
+  rewind(F);//Devuelve el puntero F al principio del fichero
+ fclose(F);
 }
+
