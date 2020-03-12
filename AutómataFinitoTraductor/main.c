@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int imprimirMenu();//Donde se elige el apartado a probar.
 
 void borrarConsola();//Despeja la consola.
 
-void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca el AFDT del .txt y lo mete en un array struct.
+void aperturaFichero(int opcion);//Saca el AFDT del .txt y lo mete en un array struct.
 
 void vaciar(char temp[]);//Rellena un vector de nulos
 
@@ -40,10 +41,9 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado
 //###################################################################################################################################################
 int main()
 {
-    char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
+    //char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
-
-    aperturaFichero(fichero,imprimirMenu());
+    aperturaFichero(imprimirMenu());
     return 0;
 }
 
@@ -76,7 +76,7 @@ void borrarConsola()//#### BORRAR CONSOLA ######################################
   system("cls");
 }
 
-void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## APERTURA DE FICHERO ###############################
+void aperturaFichero(int opcion)//################## APERTURA DE FICHERO ###############################
 {
   int i,j,n,cont=0;//Cuenta el numero de lineas(estados) del .txt
   char aux[1],temp[50];
@@ -137,7 +137,7 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
           //Tras salir del for tenemos en aux el simbolo de la primera transicion, de esta linea/estado.
           vaciar(temp);//reseteamos temp.
           fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
-          strcat(aux,temp)
+          strcat(aux,temp);
           rellenarVectores(aux,i,n);
       }
       //else if(aux='*')
@@ -181,13 +181,11 @@ void rellenarVectores(char temp[],int i,int n)
  char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
-     if(j==0)//Caso particular para la 1º transicion de una linea/estado pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
-      {
-        traductor[i].transiciones[j]=aux;//metemos el simbolo de la primera transicion
-        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
+        for(k=0;temp[k]!=','&&'\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
          {
+            traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion
             if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
-            else if(temp[k]!='!')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
+            else if(temp[k]!='!'&&temp[k]!='/')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
              {
                 vaciar(numTraduccion);
                 for(m=k;temp[m]>='0'&&temp[m]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
@@ -212,17 +210,8 @@ void rellenarVectores(char temp[],int i,int n)
                 //Ahora temp[k] esta en la posicion ANTES de ',' o '\0'; dejamos 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
              }
          }
-      }
-     else//2º,3º,4º... Transiciones de un estado, aqui empezamos con el simbolo de la transicion 'j', pero ahora temp[k] esta en ',' por lo que debemos avanzarla.
-      {
-         k++;
-         traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion 'j'.
-
-         if(temp[j-1]=='/')
-          {
-             //if(temp[j]=='!')
-          }
-      }
+        //Ahora temp[k] esta en la posicion de ',' o '\0'; si hay otra transicion ya que 'n'>1 queremos que temp[k] sea la posicion del simbolo de la siguiente transicion para que el for de 'k' se complete con normalidad.
+        k++;
   }
 }
 
