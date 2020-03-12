@@ -187,38 +187,39 @@ void rellenarVectores(char aux,char temp[],int i,int n)
      if(j==0)//Caso particular pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
       {
         traductor[i].transiciones[j]=aux;//metemos el primer simbolo de la primera transicion
-        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp que empieza con '/'
+        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
          {
-             if(temp[k-1]=='/')
-              {
-                if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
-                else if(temp[k]!='!')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
+            if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
+            else if(temp[k]!='!')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
+             {
+                vaciar(numTraduccion);
+                for(m=k;temp[m]>='0'&&temp[m]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
                  {
-                    vaciar(numTraduccion);
-                    for(m=k;temp[m]>='0'&&temp[m]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
-                     {
-                       numTraduccion[t]=temp[m];
-                       t++;
-                     }
-                    t=0;
-                    num=atoi(numTraduccion);
-                    traductor[i].cad[j].traduccion = (char*)malloc(num*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
-                    for(m=k;temp[m]!=':',m++)
-                     {
-                         if(temp[m+1]==':')
-                     }
+                   numTraduccion[t]=temp[m];
+                   t++;
                  }
+                t=0;
+                num=atoi(numTraduccion);
+                traductor[i].cad[j].traduccion = (char*)malloc(num*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
+                //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k'.
+                k=m;
+                for(m=k;temp[m]!=':',m++)
+                 {
+                    if(temp[m+1]==':')
+                 }
+             }
 
-              }
-         }
-      }
-     else
-      {
-        if(temp[j-1]=='/')
-         {
-            //if(temp[j]=='!')
          }
       }
   }
+ else//2º,3º,4º... Transiciones de un estado
+  {
+     if(temp[j-1]=='/')
+      {
+         //if(temp[j]=='!')
+      }
+  }
 }
+
+void guardarTraduccionesNoVacias()
 
