@@ -134,7 +134,7 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
           }
           n=atoi(temp);
           asignarMemoriaTransTraduDest(n,i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
-          //Tras salir de while tenemos en aux va el simbolo de la primera transicion.
+          //Tras salir del for tenemos en aux el simbolo de la primera transicion, de esta linea/estado.
           vaciar(temp);//reseteamos temp.
           fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           rellenarVectores(aux,temp,i,n);
@@ -187,7 +187,7 @@ void rellenarVectores(char aux,char temp[],int i,int n)
      if(j==0)//Caso particular pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
       {
         traductor[i].transiciones[j]=aux;//metemos el primer simbolo de la primera transicion
-        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
+        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
          {
             if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
             else if(temp[k]!='!')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
@@ -201,11 +201,13 @@ void rellenarVectores(char aux,char temp[],int i,int n)
                 t=0;
                 num=atoi(numTraduccion);
                 traductor[i].cad[j].traduccion = (char*)malloc(num*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
-                //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k'.
-                k=m;
-                for(m=k;temp[m]!=':',m++)
+                //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
+                for(k=m++;temp[k]!=':',k++)
                  {
-                    if(temp[m+1]==':')
+                    if(temp[k]!=':')
+                    {
+                        traductor[i].cad[j].traduccion
+                    }
                  }
              }
 
