@@ -44,6 +44,8 @@ int main()
     //char fichero[MaxL][MaxC];//La matriz fichero es donde se guardaran los automatasb.txt
     borrarConsola();
     aperturaFichero(imprimirMenu());
+    free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+
     return 0;
 }
 
@@ -116,16 +118,17 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
     printf("No se ha podido reservar la memoria.\n");
     exit (1);
   }
-  for(i=0; !feof(F); i++)
+ for(i=0; !feof(F); i++)
    {
       vaciar(temp);//Primeros debemos vaciar temp.
+      vaciar(aux);
       traductor[i].nombreEstado=i;
       aux[0]=fgetc(F);//Leemos el primer caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
       if(aux[0]=='n') traductor[i].esFinal=FALSE;
       else if(aux[0]=='f') traductor[i].esFinal=TRUE;
       aux[0]=fgetc(F);//Leemos el segundo caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
       if(aux[0]=='-')//Esta linea/estado si tiene transiciones.
-      {
+       {
          aux[0]=fgetc(F);//Leemos el tercer caracter de una linea y el cursor se queda tras ella, en este caso nos indica cuantas transiciones tiene esta linea estado.
          for(j=0;aux[0]>='0'&&aux[0]<='9';j++)//Ya que pueden existir mas de 9 transiciones
           {
@@ -139,9 +142,13 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
           fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           strcat(aux,temp);
           rellenarVectores(aux,i,n);
-      }
-      //else if(aux='*')
+       }
+      else if(aux[0]=='*')//Esta linea estado no tiene transiciones
+       {
+            asignarMemoriaTransTraduDest(0,i);
+       }
    }
+ fclose(F);
 }
 
 void vaciar(char c[])
@@ -177,7 +184,7 @@ void asignarMemoriaTransTraduDest(int n,int i)
 
 void rellenarVectores(char temp[],int i,int n)
 {
- int j,k,m,t=0,num;
+ int j,k,m,t=0;
  char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
@@ -196,7 +203,7 @@ void rellenarVectores(char temp[],int i,int n)
                 t=0;
                 traductor[i].cad[j].traduccion = (char*)malloc(atoi(numTraduccion)*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
-                for(k=m+1;temp[k]!=':',k++)
+                for(k=m+1;temp[k]!=':';k++)
                  {
                      traductor[i].cad[j].traduccion[t]=temp[k];
                      t++;
