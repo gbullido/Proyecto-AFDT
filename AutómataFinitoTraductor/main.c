@@ -134,7 +134,7 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
           }
           n=atoi(temp);
           asignarMemoriaTransTraduDest(n,i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
-          //Tras salir de while tenemos en aux la el primer simbolo de la primera transicion.
+          //Tras salir de while tenemos en aux va el simbolo de la primera transicion.
           vaciar(temp);//reseteamos temp.
           fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           rellenarVectores(aux,temp,i,n);
@@ -181,9 +181,9 @@ void asignarMemoriaTransTraduDest(int n,int i)
 void rellenarVectores(char aux,char temp[],int i,int n)
 {
  int j,k,m;
- for(j=0;j<n;j++)//for de numero de transiciones
+ for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
-     if(j==0)//Caso particular `pues temp empieza por el primer '/' y no por el 1º simbolo de la 1º transicion
+     if(j==0)//Caso particular pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
       {
         traductor[i].transiciones[j]=aux;//metemos el primer simbolo de la primera transicion
         for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp que empieza con '/'
@@ -191,11 +191,18 @@ void rellenarVectores(char aux,char temp[],int i,int n)
              if(temp[k-1]=='/')
               {
                 if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
-                else if(temp[k]!='!')
+                else if(temp[k]!='!')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
                  {
+                    for(m=k;temp[k]>='0'&&temp[k]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
+                     {
+                       temp[m]=aux;
+                       aux=fgetc(F);//Lee siguiente caracter
+                     }
+                    n=atoi(temp);
+                    traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));
                     for(m=k;temp[m]!=':',m++)
                      {
-
+                         if(temp[m+1]==':')
                      }
                  }
 
