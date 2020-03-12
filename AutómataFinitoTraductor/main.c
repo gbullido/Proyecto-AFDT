@@ -7,7 +7,9 @@ int imprimirMenu();//Donde se elige el apartado a probar.
 
 void borrarConsola();//Despeja la consola.
 
-void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca las palabras del .txt y las copia en la matriz fichero.
+void aperturaFichero(char fichero[MaxL][MaxC],int opcion);//Saca el AFDT del .txt y lo mete en un array struct.
+
+void vaciar(char temp[]);//Rellena un vector de nulos
 
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
@@ -66,8 +68,8 @@ void borrarConsola()//#### BORRAR CONSOLA ######################################
 
 void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## APERTURA DE FICHERO ###############################
 {
-  int cont=0;//Cuenta el numero de lineas(estados) del .txt
-  char temp[50];
+  int i,j,cont=0;//Cuenta el numero de lineas(estados) del .txt
+  char aux,temp[50];
   FILE *F;
   switch( opcion )
    {
@@ -82,7 +84,7 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
 
     case 0: exit(0);//Comando para terminar la ejecucion entera del programa
           break;
-  }
+   }
  if (F==NULL)
   {
     printf("\n\t\tERROR:el fichero no se ha abierto correctamente\n");
@@ -95,7 +97,30 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
    cont++;//Cada aumento es una linea/estado más.
    //Cada ciclo del while sobreescribe temp añadiendo al final un nulo.
   }
-  rewind(F);//Devuelve el puntero F al principio del fichero
- fclose(F);
+ rewind(F);//Devuelve el puntero F al principio del fichero
+
+ //Como ya conocemos el numero de estados del AFDT,crearemos un vector de ese tamaño justo.
+ traductor=(AFDT*)malloc(cont*sizeof(AFDT));
+ if(traductor==NULL)//Comprobamos que se reservo la memoria correctamente
+  {
+    printf("No se ha podido reservar la memoria.\n");
+    exit (1);
+  }
+
+  for(i=0; !feof(F); i++)
+  {
+      //Primeros debemos vaciar temp.
+      vaciar(temp);
+      for(j=0;)
+  }
+}
+
+void vaciar(char temp[])
+{
+    int i;
+    for(i=0;i<0;i++)
+    {
+        temp[i]='\0';
+    }
 }
 
