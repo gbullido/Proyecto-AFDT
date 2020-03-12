@@ -22,7 +22,7 @@ typedef struct
      int numeroEstado;
      char *transiciones;//Guarda las transiciones que salen del estado
      char *traducciones;//Guarda las traducciones respectivas a las transiciones
-     int *destinos;//Guarda el destino de cada tranasicion
+     int *destinos;//Guarda el destino de cada transicion respectivamente
 }AFDT;
 
 AFDT *traductor;
