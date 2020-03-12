@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX 50
 
 int imprimirMenu();//Donde se elige el apartado a probar.
 
@@ -14,6 +15,8 @@ void asignarMemoriaTransTraduDest(int n,int i);//Asignar el tamaño a los diferen
 
 void rellenarVectores(char temp[],int i,int n);//rellena los vectores dinamicos con la informacion pertinente
 
+void meterCharAlPrincpio(char aux,char temp[]);//mete un char al princpio de temp sin borrar nada
+
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
 	FALSE, TRUE
@@ -21,20 +24,22 @@ enum Boolean//Los boleanos no existen en C tienes que crearlos.
 
 typedef struct
 {
+    int tamTraduccion;//Cantidad de simbolos de la traduccion
     char *traduccion;//cadena de caracteres con la traduccion
 }traducciones;
 
 typedef struct
 {
-     int numeroEstadosAFDT;
-     enum Boolean esFinal;
-     int nombreEstado;
-     char *transiciones;//Guarda las transiciones que salen del estado
-     traducciones *cad;//Guarda las traducciones respectivas a las transiciones
-     int *destinos;//Guarda el destino de cada transicion respectivamente
+     int numeroEstadosAFDT;//Nº de estados del automata elegido.
+     int numeroTransiciones;//Nº de transiciones de un estado=traducciones=destinos.
+     enum Boolean esFinal;//TRUE es final, FALSE no es final.
+     int nombreEstado;//Identificador del estado.
+     char *transiciones;//Guarda las transiciones que salen del estado.
+     traducciones *cad;//Guarda las traducciones respectivas a las transiciones.
+     int *destinos;//Guarda el destino de cada transicion respectivamente.
 }AFDT;
 
-AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado
+AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado.
 
 
 //###################################################################################################################################################
@@ -42,10 +47,31 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado
 //###################################################################################################################################################
 int main()
 {
-    borrarConsola();
-    aperturaFichero(imprimirMenu());
-    printf("TERMINAMOS???%d-----",traductor[0].numeroEstadosAFDT);
-    //free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+    int i,j,respuesta=0;
+    //borrarConsola();
+    do{
+        aperturaFichero(imprimirMenu());
+        printf("\n\t\tEL AFDT TIENE %d ESTADOS\n",traductor[0].numeroEstadosAFDT);
+        printf("\nDESGLOSE DE ESTADOS:\n");
+        for(i=0;i<traductor[0].numeroEstadosAFDT;i++)
+        {
+            printf("\t- Estado: %d ",i);
+            if(traductor[i].esFinal==TRUE) printf("(ES FINAL)\n");
+            else if (traductor[i].esFinal==FALSE) printf("(NO FINAL)\n");
+            if(traductor[i].numeroTransiciones==0) printf("\t\t- NO tiene transiciones");
+            else
+             {
+                 for(j=0;j<traductor[i].numeroTransiciones;j++)
+                  {
+                     printf("\t\t- Transicion %d\n",j);
+                     printf("\t\t\t- Mediante el simbolo '%c'\n",traductor[i].transiciones[j]);
+                     printf("\t\t\t- Estado destino '%c'\n",traductor[i].destinos[j]);
+                     printf("\t\t\t- Traduccion %c -----> %s\n",traductor[i].transiciones[j],traductor[i].cad[j].traduccion);
+                  }
+             }
+        }
+        free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+    }while(respuesta!=0);
 
     return 0;
 }
@@ -82,7 +108,7 @@ void borrarConsola()//#### BORRAR CONSOLA ######################################
 void aperturaFichero(int opcion)//################## APERTURA DE FICHERO ###############################
 {
   int i,j,n,cont=0;//Cuenta el numero de lineas(estados) del .txt
-  char aux[50],temp[50];
+  char aux,temp[MAX];
   FILE *F;
   switch( opcion )
    {
@@ -114,44 +140,41 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
 
  //Como ya conocemos el numero de estados del AFDT,asignamos al vector traductor el tamaño justo.
  traductor=(AFDT*)malloc(cont*sizeof(AFDT));
- traductor[0].numeroEstadosAFDT=cont;//GUardamos el numero de estados de AFDT pra luego poder recorrerlo.
  if(traductor==NULL)//Comprobamos que se reservo la memoria correctamente
   {
     printf("No se ha podido reservar la memoria.\n");
     exit (1);
   }
+ traductor[0].numeroEstadosAFDT=cont;//Guardamos el numero de estados de AFDT pra luego poder recorrerlo.
  for(i=0; !feof(F); i++)
    {
       vaciar(temp);//Primeros debemos vaciar temp.
-      vaciar(aux);
       traductor[i].nombreEstado=i;
-      aux[0]=fgetc(F);//Leemos el primer caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
-      if(aux[0]=='n') traductor[i].esFinal=FALSE;
-      else if(aux[0]=='f') traductor[i].esFinal=TRUE;
-      vaciar(aux);
-      aux[0]=fgetc(F);//Leemos el segundo caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
-      if(aux[0]=='-')//Esta linea/estado si tiene transiciones.
+      aux=fgetc(F);//Leemos el primer caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
+      if(aux=='n') traductor[i].esFinal=FALSE;
+      else if(aux=='f') traductor[i].esFinal=TRUE;
+      aux=fgetc(F);//Leemos el segundo caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado tiene transiciones o no.
+      if(aux=='-')//Esta linea/estado si tiene transiciones.
        {
-         vaciar(aux);
-         aux[0]=fgetc(F);//Leemos el tercer caracter de una linea y el cursor se queda tras ella, en este caso nos indica cuantas transiciones tiene esta linea estado.
-         for(j=0;aux[0]>='0'&&aux[0]<='9';j++)//Ya que pueden existir mas de 9 transiciones
+         aux=fgetc(F);//Leemos el tercer caracter de una linea y el cursor se queda tras ella, en este caso nos indica cuantas transiciones tiene esta linea estado.
+         for(j=0;aux>='0'&&aux<='9';j++)//Ya que pueden existir mas de 9 transiciones
           {
-             temp[j]=aux[0];
-             aux[0]=fgetc(F);//Lee siguiente caracter
+             temp[j]=aux;
+             aux=fgetc(F);//Lee siguiente caracter
           }
           n=atoi(temp);
           asignarMemoriaTransTraduDest(n,i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
           //Tras salir del for tenemos en aux el simbolo de la primera transicion, de esta linea/estado.
           vaciar(temp);//reseteamos temp.
-          fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
+          fgets(temp,MAX,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           //fscanf(F,"%s",temp);
-          strcat(aux,temp);
-          rellenarVectores(aux,i,n);
+          meterCharAlPrincpio(aux,temp);
+          rellenarVectores(temp,i,n);
        }
-      else if(aux[0]=='*')//Esta linea estado no tiene transiciones
+      else if(aux=='*')//Esta linea estado no tiene transiciones
        {
             asignarMemoriaTransTraduDest(0,i);
-            aux[0]=fgetc(F);//Para leer EOF.
+            aux=fgetc(F);//Para leer EOF.
        }
    }
  fclose(F);
@@ -171,25 +194,29 @@ void asignarMemoriaTransTraduDest(int n,int i)
     traductor[i].transiciones = (char*)malloc(n*sizeof(char));
     if(traductor[i].transiciones==NULL)//Comprobamos que se reservo la memoria correctamente
      {
-        printf("No se ha podido reservar la memoria.\n");
+        printf("No se ha podido reservar la memoria para las transiciones del estado %d.\n",traductor[i].nombreEstado);
         exit (1);
      }
     traductor[i].cad = (traducciones*)malloc(n*sizeof(traducciones));
     if(traductor[i].cad==NULL)//Comprobamos que se reservo la memoria correctamente
      {
-        printf("No se ha podido reservar la memoria.\n");
+        printf("No se ha podido reservar la memoria para las traducciones del estado %d.\n",traductor[i].nombreEstado);
         exit (1);
      }
     traductor[i].destinos = (int*)malloc(n*sizeof(int));
     if(traductor[i].destinos==NULL)//Comprobamos que se reservo la memoria correctamente
      {
-        printf("No se ha podido reservar la memoria.\n");
+        printf("No se ha podido reservar la memoria para los destinos del estado %d.\n",traductor[i].nombreEstado);
         exit (1);
      }
+    traductor[i].numeroTransiciones=n;//Guardamos el numero de transiciones que sera = traducciones e = destinos.
 }
 
 void rellenarVectores(char temp[],int i,int n)
 {
+ printf("LLEGAS AQUI************************************?\n");
+ printf(temp);
+ printf("\n");
  int j,k,m,t=0;
  char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
@@ -197,7 +224,16 @@ void rellenarVectores(char temp[],int i,int n)
         for(k=0;temp[k]!=','&&'\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
          {
             traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion
-            if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
+            if(temp[k]=='!')
+            {
+                traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
+                if(traductor[i].cad[j].traduccion==NULL)//Comprobamos que se reservo la memoria correctamente
+                 {
+                    printf("No se ha podido reservar la memoria, para la traduccion de la transicion %d del estado %d.\n",j,traductor[i].nombreEstado);
+                    exit (1);
+                 }
+                traductor[i].cad[j].tamTraduccion=0;
+            }
             else if(temp[k]!='!'&&temp[k]!='/')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
              {
                 vaciar(numTraduccion);
@@ -208,6 +244,12 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 t=0;
                 traductor[i].cad[j].traduccion = (char*)malloc(atoi(numTraduccion)*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
+                if(traductor[i].cad[j].traduccion==NULL)//Comprobamos que se reservo la memoria correctamente
+                 {
+                    printf("No se ha podido reservar la memoria, para la traduccion de la transicion %d del estado %d.\n",j,traductor[i].nombreEstado);
+                    exit (1);
+                 }
+                traductor[i].cad[j].tamTraduccion=atoi(numTraduccion);//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
                 for(k=m+1;temp[k]!=':';k++)
                  {
@@ -226,6 +268,21 @@ void rellenarVectores(char temp[],int i,int n)
         //Ahora temp[k] esta en la posicion de ',' o '\0'; si hay otra transicion ya que 'n'>1 queremos que temp[k] sea la posicion del simbolo de la siguiente transicion para que el for de 'k' se complete con normalidad.
         k++;
   }
+}
+
+void meterCharAlPrincpio(char aux,char temp[])
+{
+    char temp2;
+    int i;
+    puts(temp);
+    for(i=0;i<MAX;i++)
+     {
+       temp2=temp[i];
+       temp[i]=aux;
+       aux=temp2;
+     }
+     printf("\n\n");
+     puts(temp);
 }
 
 
