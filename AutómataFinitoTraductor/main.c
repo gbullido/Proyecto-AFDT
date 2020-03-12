@@ -20,6 +20,9 @@ typedef struct
 {
      enum Boolean esFinal;
      int numeroEstado;
+     char *transiciones;//Guarda las transiciones que salen del estado
+     char *traducciones;//Guarda las traducciones respectivas a las transiciones
+     int *destinos;//Guarda el destino de cada tranasicion
 }AFDT;
 
 AFDT *traductor;
@@ -111,8 +114,10 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
    {
       //Primeros debemos vaciar temp.
       vaciar(temp);
+      aux='0';//Ya que no esta inicializada
       for(j=0;aux!='-'&&'*';j++)
        {
+           aux=fgetc(F);//Lee letra a letra
 
        }
    }
