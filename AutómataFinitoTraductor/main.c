@@ -18,10 +18,15 @@ enum Boolean//Los boleanos no existen en C tienes que crearlos.
 
 typedef struct
 {
+    char *traduccion;
+}traducciones;
+
+typedef struct
+{
      enum Boolean esFinal;
-     int numeroEstado;
+     int nombreEstado;
      char *transiciones;//Guarda las transiciones que salen del estado
-     char *traducciones;//Guarda las traducciones respectivas a las transiciones
+     traducciones *cad;//Guarda las traducciones respectivas a las transiciones
      int *destinos;//Guarda el destino de cada transicion respectivamente
 }AFDT;
 
@@ -109,10 +114,10 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
     printf("No se ha podido reservar la memoria.\n");
     exit (1);
   }
-
   for(i=0; !feof(F); i++)
    {
       vaciar(temp);//Primeros debemos vaciar temp.
+      traductor[i].nombreEstado=i;
       aux=fgetc(F);//Leemos la primera letra de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
 
       /*for(j=0;aux!='-'&&'*';j++)
