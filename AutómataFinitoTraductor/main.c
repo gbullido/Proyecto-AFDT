@@ -181,10 +181,10 @@ void asignarMemoriaTransTraduDest(int n,int i)
 void rellenarVectores(char aux,char temp[],int i,int n)
 {
  int j,k,m,t=0,num;
- char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int.
+ char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
-     if(j==0)//Caso particular pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
+     if(j==0)//Caso particular para la 1º transicion de una linea/estado pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
       {
         traductor[i].transiciones[j]=aux;//metemos el primer simbolo de la primera transicion
         for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
@@ -199,16 +199,20 @@ void rellenarVectores(char aux,char temp[],int i,int n)
                    t++;
                  }
                 t=0;
-                num=atoi(numTraduccion);
-                traductor[i].cad[j].traduccion = (char*)malloc(num*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
+                traductor[i].cad[j].traduccion = (char*)malloc(atoi(numTraduccion)*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
-                for(k=m++;temp[k]!=':',k++)
+                for(k=m+1;temp[k]!=':',k++)
                  {
                     if(temp[k]!=':')
                     {
-                        traductor[i].cad[j].traduccion
+                        traductor[i].cad[j].traduccion[t]=temp[k];
+                        t++;
                     }
                  }
+                t=0;
+                //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
+                vaciar(numTraduccion);
+
              }
 
          }
