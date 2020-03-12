@@ -138,10 +138,6 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
           vaciar(temp);//reseteamos temp.
           fgets(temp,50,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           rellenarVectores(aux,temp,i,n);
-
-
-
-
       }
       //else if(aux='*')
    }
@@ -203,16 +199,16 @@ void rellenarVectores(char aux,char temp[],int i,int n)
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
                 for(k=m+1;temp[k]!=':',k++)
                  {
-                    if(temp[k]!=':')
-                    {
-                        traductor[i].cad[j].traduccion[t]=temp[k];
-                        t++;
-                    }
+                     traductor[i].cad[j].traduccion[t]=temp[k];
+                     t++;
                  }
                 t=0;
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
                 vaciar(numTraduccion);
-
+                k++;
+                numTraduccion[0]=temp[k];
+                traductor[i].destinos[j]=atoi(numTraduccion);
+                //Ahora temp[k] esta en la posicion ANTES de ',' o '\0'; dejamos 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
              }
 
          }
@@ -227,5 +223,4 @@ void rellenarVectores(char aux,char temp[],int i,int n)
   }
 }
 
-void guardarTraduccionesNoVacias()
 
