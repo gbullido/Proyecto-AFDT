@@ -185,12 +185,15 @@ void rellenarVectores(char aux,char temp[],int i,int n)
  int j,k;
  for(j=0;j<n;j++)//for de numero de transiciones
   {
-     if(n==0)
+     if(j==0)
       {
         strcpy(traductor[i].transiciones[j],aux);//metemos el primer simbolo de la primera transicion
-        for(k=0;temp[k]!=','&&'\0';k++)
+        for(k=1;temp[k]!=','&&'\0';k++)
          {
-
+             if(temp[k-1]=='/')
+              {
+                if(temp[k]=='!')
+              }
          }
       }
      else
