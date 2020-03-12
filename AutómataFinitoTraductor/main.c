@@ -147,12 +147,12 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
    }
 }
 
-void vaciar(char temp[])
+void vaciar(char c[])
 {
     int i;
     for(i=0;i<0;i++)
      {
-        temp[i]='\0';
+        c[i]='\0';
      }
 }
 
@@ -180,7 +180,8 @@ void asignarMemoriaTransTraduDest(int n,int i)
 
 void rellenarVectores(char aux,char temp[],int i,int n)
 {
- int j,k,m;
+ int j,k,m,t=0,num;
+ char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
      if(j==0)//Caso particular pues temp empieza por el primer '/' y no por el simbolo de la 1º transicion
@@ -193,13 +194,15 @@ void rellenarVectores(char aux,char temp[],int i,int n)
                 if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
                 else if(temp[k]!='!')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
                  {
-                    for(m=k;temp[k]>='0'&&temp[k]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
+                    vaciar(numTraduccion);
+                    for(m=k;temp[m]>='0'&&temp[m]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
                      {
-                       temp[m]=aux;
-                       aux=fgetc(F);//Lee siguiente caracter
+                       numTraduccion[t]=temp[m];
+                       t++;
                      }
-                    n=atoi(temp);
-                    traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));
+                    t=0;
+                    num=atoi(numTraduccion);
+                    traductor[i].cad[j].traduccion = (char*)malloc(num*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
                     for(m=k;temp[m]!=':',m++)
                      {
                          if(temp[m+1]==':')
