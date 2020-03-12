@@ -108,19 +108,22 @@ void aperturaFichero(char fichero[MaxL][MaxC],int opcion)//################## AP
   }
 
   for(i=0; !feof(F); i++)
-  {
+   {
       //Primeros debemos vaciar temp.
       vaciar(temp);
-      for(j=0;)
-  }
+      for(j=0;aux!='-'&&'*';j++)
+       {
+
+       }
+   }
 }
 
 void vaciar(char temp[])
 {
     int i;
     for(i=0;i<0;i++)
-    {
+     {
         temp[i]='\0';
-    }
+     }
 }
 
