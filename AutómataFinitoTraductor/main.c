@@ -188,11 +188,11 @@ void rellenarVectores(char aux,char temp[],int i,int n)
      if(j==0)
       {
         strcpy(traductor[i].transiciones[j],aux);//metemos el primer simbolo de la primera transicion
-        for(k=1;temp[k]!=','&&'\0';k++)
+        for(k=1;temp[k]!=','&&'\0';k++)//for para recorrer temp
          {
              if(temp[k-1]=='/')
               {
-                if(temp[k]=='!')
+                if(temp[k]=='!') traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));
               }
          }
       }
@@ -200,7 +200,7 @@ void rellenarVectores(char aux,char temp[],int i,int n)
       {
         if(temp[j-1]=='/')
          {
-            if(temp[j]=='!')
+            //if(temp[j]=='!')
          }
       }
   }
