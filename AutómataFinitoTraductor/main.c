@@ -52,125 +52,134 @@ int main()
     int i,j,m,respuesta=0,opcion,n,estadoActual,posT,posS,tamS;
     char *palabra,*salida;
     borrarConsola();
-    do{
+    do{//Ir cambiando de AFDT
         estadoActual=0;
         posS=0;
         tamS=0;
         borrarConsola();
         opcion=imprimirMenu();
         aperturaFichero(opcion);
-        borrarConsola();
-        printf("\n\t\tEL AFDT %d TIENE %d ESTADOS\n",opcion,traductor[0].numeroEstadosAFDT);
-        printf("\nDESGLOSE DE ESTADOS:\n");
-        for(i=0;i<traductor[0].numeroEstadosAFDT;i++)
-        {
-            printf("\t- Estado: %d ",i);
-            if(traductor[i].esFinal==TRUE) printf("(ES FINAL)\n");
-            else if (traductor[i].esFinal==FALSE) printf("(NO FINAL)\n");
-            if(traductor[i].numeroTransiciones==0) printf("\t\t- NO tiene transiciones");
-            else
+        do{//Mismo AFDT todo el rato
+            borrarConsola();
+            printf("\n\t\tEL AFDT %d TIENE %d ESTADOS\n",opcion,traductor[0].numeroEstadosAFDT);
+            printf("\nDESGLOSE DE ESTADOS:\n");
+            for(i=0;i<traductor[0].numeroEstadosAFDT;i++)
              {
-                 for(j=0;j<traductor[i].numeroTransiciones;j++)
-                  {
-                     printf("\t\t- Transicion %d\n",j);
-                     printf("\t\t\t- Mediante el simbolo '%c'\n",traductor[i].transiciones[j]);
-                     printf("\t\t\t- Estado destino '%d'\n",traductor[i].destinos[j]);
-                     printf("\t\t\t- Traduccion %c --> ",traductor[i].transiciones[j]);
-                     if(traductor[i].cad[j].tamTraduccion!=0)
-                      {
+                printf("\t- Estado: %d ",i);
+                if(traductor[i].esFinal==TRUE) printf("(ES FINAL)\n");
+                else if (traductor[i].esFinal==FALSE) printf("(NO FINAL)\n");
+                if(traductor[i].numeroTransiciones==0) printf("\t\t- NO tiene transiciones");
+                else
+                 {
+                   for(j=0;j<traductor[i].numeroTransiciones;j++)
+                    {
+                      printf("\t\t- Transicion %d\n",j);
+                      printf("\t\t\t- Mediante el simbolo '%c'\n",traductor[i].transiciones[j]);
+                      printf("\t\t\t- Estado destino '%d'\n",traductor[i].destinos[j]);
+                      printf("\t\t\t- Traduccion %c --> ",traductor[i].transiciones[j]);
+                      if(traductor[i].cad[j].tamTraduccion!=0)
+                       {
                          for(m=0;m<traductor[i].cad[j].tamTraduccion;m++)
                           {
                              printf("%c",traductor[i].cad[j].traduccion[m]);
                           }
                          printf("\n");
-                      }
-                     else printf("palabra vacia (Epsilon)\n");
-                  }
+                       }
+                      else printf("palabra vacia (Epsilon)\n");
+                    }
+                 }
              }
-        }
-       printf("\n\nIntroduzca el numero de simbolos que va introducir (0 seria Epsilon):");
-       scanf("%d", &n);
-       palabra = (char*)malloc(n*sizeof(char));
-       if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
-        {
-           printf("No se ha podido reservar la memoria para su palabra vuelva a intentarlo.\n");
-           exit (1);
-        }
-       vaciar(palabra,n);
-       if(n!=0)
-       {
-          printf("Introduce una palabra reconocida por el lenguaje L del apartado %d del enunciado con %d simbolos.\n",opcion,n);
-          printf("NOTA: Si introduce menos simbolos de los guardados se consideraran Epsilon los restantes\n");
-          scanf("%s", palabra);
-       }
-       if(n==0)
-        {
-           if(traductor[0].esFinal==TRUE) printf("TRADUCCION: Palabra vacia (Epsilon)\n");
-           else printf("NO HAY TRADUCCION: La palabra vacia (Epsilon) no pertenece a L\n");
-        }
-       else
-        {
-           for(i=0;i<n;i++)//recorremos la palabra
-            {
-                posT=tieneTransicion(palabra[i],estadoActual);
-                if(posT>=0)//Hay transiccion con el simbolo actual.
-                   {
-
-                       if(i==0)
-                       {
-                           salida = (char*)malloc(traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
-                       }
-                       else
-                       {
-                           if(traductor[estadoActual].cad[posT].tamTraduccion!=0) salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));
-                       }
-                       tamS=tamS+traductor[estadoActual].cad[posT].tamTraduccion;
-                       if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
-                        {
-                           printf("No se ha podido reservar la memoria para la traduccion, vuelva a intentarlo.\n");
-                           exit (1);
-                        }
-                       for(j=0;j<traductor[estadoActual].cad[posT].tamTraduccion;j++)//actualizamos la traduccion
-                        {
-                            salida[posS]=traductor[estadoActual].cad[posT].traduccion[j];
-                            posS++;
-                        }
-                       estadoActual=traductor[estadoActual].destinos[posT];
-                   }
-                else
-                   {
-                       if(palabra[i]=='\0')//Se han introducido menos simbolos a los dichos
-                        {
-                           i=n-1;
-                        }
-                       else//un simbolo no pertenece a L
-                        {
-                           n=n-1;
-                        }
-                   }
-            }
-           if(i==n&&traductor[estadoActual].esFinal==TRUE)
-            {
-               printf("TRADUCCION: ");
-               if(tamS==0) printf("Palabra vacia (Epsilon)");
-               else
+            printf("\n\nIntroduzca el numero de simbolos que va introducir (0 seria Epsilon):");
+            scanf("%d", &n);
+            palabra = (char*)malloc(n*sizeof(char));
+            if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
+             {
+               printf("No se ha podido reservar la memoria para su palabra vuelva a intentarlo.\n");
+               exit (1);
+             }
+            vaciar(palabra,n);
+            if(n!=0)
+             {
+               printf("Introduce una palabra reconocida por el lenguaje L del apartado %d del enunciado con %d simbolos.\n",opcion,n);
+               printf("NOTA: Si introduce menos simbolos de los guardados se consideraran Epsilon los restantes\n");
+               scanf("%s", palabra);
+             }
+            if(n==0)
+             {
+              if(traductor[0].esFinal==TRUE) printf("TRADUCCION: Palabra vacia (Epsilon)\n");
+              else printf("NO HAY TRADUCCION: La palabra vacia (Epsilon) no pertenece a L\n");
+             }
+            else
+             {
+              for(i=0;i<n;i++)//recorremos la palabra
                {
-                for(m=0;m<tamS;m++)
-                {
-                  printf("%c",salida[m]);
-                }
-               }
-            }
-           else
-            {
-               printf("No existe traduccion, la palabra dada no pertenece a L\n");
-            }
-        }
-       free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
-       free(palabra);//liberamos memoria para ya que se ha elegido un automata diferente
-       free(salida);//liberamos memoria para ya que se ha elegido un automata diferente
-    }while(respuesta!=0);
+                 posT=tieneTransicion(palabra[i],estadoActual);
+                 if(posT>=0)//Hay transiccion con el simbolo actual.
+                   {
 
+                     if(i==0)
+                      {
+                         salida = (char*)malloc(traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
+                      }
+                     else
+                      {
+                         if(traductor[estadoActual].cad[posT].tamTraduccion!=0) salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));
+                      }
+                     tamS=tamS+traductor[estadoActual].cad[posT].tamTraduccion;
+                     if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
+                      {
+                        printf("No se ha podido reservar la memoria para la traduccion, vuelva a intentarlo.\n");
+                        exit (1);
+                      }
+                     for(j=0;j<traductor[estadoActual].cad[posT].tamTraduccion;j++)//actualizamos la traduccion
+                      {
+                         salida[posS]=traductor[estadoActual].cad[posT].traduccion[j];
+                         posS++;
+                      }
+                     estadoActual=traductor[estadoActual].destinos[posT];
+                   }
+                 else
+                   {
+                     if(palabra[i]=='\0')//Se han introducido menos simbolos a los dichos
+                      {
+                         i=n-1;
+                      }
+                     else//un simbolo no pertenece a L
+                      {
+                         n=n-1;
+                      }
+                   }
+               }
+              if(i==n&&traductor[estadoActual].esFinal==TRUE)
+               {
+                 printf("TRADUCCION: ");
+                 if(tamS==0) printf("Palabra vacia (Epsilon)\n\n");
+                 else
+                  {
+                    for(m=0;m<tamS;m++)
+                     {
+                       printf("%c",salida[m]);
+                     }
+                  }
+               }
+              else
+               {
+                 printf("No existe traduccion, la palabra dada no pertenece a L\n");
+               }
+             }
+            free(palabra);//liberamos memoria
+            free(salida);//liberamos memoria
+            printf("%cQuiere otra seguir probando el mismo AFDT(1), o cambiar de AFDT(2) o finalizar(0)?: ",168);//168==¿, pero si pongo '¿' me imprime otro signo
+            scanf("%d",&respuesta);
+            while(respuesta>2 || respuesta<0)
+             {
+               printf("\nEsa opcion no existe, porfavor introduzca 1 o 2 o 0 si quiere probar el mismo AFDT, cambiar de AFDT\no finalizar, respectivamente: ");
+               fflush( stdin );
+               scanf("%d",&respuesta);
+             }
+          }while(respuesta==1);
+        free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+      }while(respuesta==2);
     return 0;
 }
 
