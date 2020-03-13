@@ -144,7 +144,7 @@ int main()
            if(i==n&&traductor[estadoActual].esFinal==TRUE)
             {
                printf("TRADUCCION: ");
-               if(tamS==0) printf("Palabra vacia (Epsilon)")
+               if(tamS==0) printf("Palabra vacia (Epsilon)");
                else
                {
                 for(m=0;m<tamS;m++)
