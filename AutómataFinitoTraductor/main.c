@@ -53,14 +53,14 @@ int main()
     char *palabra,*salida;
     borrarConsola();
     do{//Ir cambiando de AFDT
-        estadoActual=0;
-        posS=0;
-        tamS=0;
         borrarConsola();
         opcion=imprimirMenu();
         aperturaFichero(opcion);
         do{//Mismo AFDT todo el rato
             borrarConsola();
+            estadoActual=0;
+            posS=0;
+            tamS=0;
             printf("\n\t\tEL AFDT %d TIENE %d ESTADOS\n",opcion,traductor[0].numeroEstadosAFDT);
             printf("\nDESGLOSE DE ESTADOS:\n");
             for(i=0;i<traductor[0].numeroEstadosAFDT;i++)
@@ -146,10 +146,14 @@ int main()
                       }
                      else//un simbolo no pertenece a L
                       {
-                         n=n-1;
+                         n=-1;
                       }
                    }
                }
+              printf("%d == %d\n",i,n);
+              printf("%d\n",estadoActual);
+              printf("%s\n",salida);
+
               if(i==n&&traductor[estadoActual].esFinal==TRUE)
                {
                  printf("TRADUCCION: ");
@@ -160,6 +164,7 @@ int main()
                      {
                        printf("%c",salida[m]);
                      }
+                    printf("\n");
                   }
                }
               else
