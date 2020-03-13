@@ -9,7 +9,7 @@ void borrarConsola();//Despeja la consola.
 
 void aperturaFichero(int opcion);//Saca el AFDT del .txt y lo mete en un array struct.
 
-void vaciar(char temp[]);//Rellena un vector de nulos
+void vaciar(char temp[],int tam);//Rellena un vector de nulos
 
 void asignarMemoriaTransTraduDest(int n,int i);//Asignar el tamaño a los diferentes vectores dinamicos del struct AFDT, tras saber el numero de transiciones.
 
@@ -47,13 +47,14 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado.
 //###################################################################################################################################################
 int main()
 {
-    int i,j,m,respuesta=0,opcion;
-    char palabra[MAX];
+    int i,j,m,respuesta=0,opcion,n;
+    char *palabra,*salida;
     borrarConsola();
     do{
         borrarConsola();
         opcion=imprimirMenu();
         aperturaFichero(opcion);
+        borrarConsola();
         printf("\n\t\tEL AFDT %d TIENE %d ESTADOS\n",opcion,traductor[0].numeroEstadosAFDT);
         printf("\nDESGLOSE DE ESTADOS:\n");
         for(i=0;i<traductor[0].numeroEstadosAFDT;i++)
@@ -82,20 +83,31 @@ int main()
                   }
              }
         }
-       vaciar(palabra);
-       printf("Introduce una palabra reconocida por el lenguaje L del %dº apartado del enunciado.\n",opcion);
-       printf("NOTA: Si solo se quiere enviar la palabra vacia (Epsilon), pulse ENTER.");
-       printf("Introduzca su palabra (maximo 50 simbolos):");
-       gets(palabra);
-       if(strlen(palabra)==0)
+       printf("\n\nIntroduzca el numero de simbolos que va introducir (0 seria Epsilon):");
+       scanf("%d", &n);
+       palabra = (char*)malloc(n*sizeof(char));
+       if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
+        {
+           printf("No se ha podido reservar la memoria, para su palabra vuelva a intentarlo.\n");
+           exit (1);
+        }
+       vaciar(palabra,n);
+       //*salida = realloc(salida,cl*sizeof(char));
+       printf("Introduce una palabra reconocida por el lenguaje L del apartado %d del enunciado con %d simbolos.\n",opcion,n);
+       printf("NOTA: Si introduce menos simbolos de los guardados se consideraran Epsilon los restantes\n");
+       scanf("%s", palabra);
+       if(n==0);
         {
            if(traductor[0].esFinal==TRUE) printf("TRADUCCION: Palabra vacia (Epsilon)\n");
            else printf("NO HAY TRADUCCION: La palabra vacia (Epsilon) no pertenece a L\n");
         }
-       /*else
+       else
         {
-           for(i)
-        }*/
+           for(i=0;i<n;i++)
+            {
+
+            }
+        }
        free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
     }while(respuesta!=0);
 
@@ -174,7 +186,7 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
  traductor[0].numeroEstadosAFDT=cont;//Guardamos el numero de estados de AFDT pra luego poder recorrerlo.
  for(i=0; !feof(F); i++)
    {
-      vaciar(temp);//Primeros debemos vaciar temp.
+      vaciar(temp,MAX);//Primeros debemos vaciar temp.
       traductor[i].nombreEstado=i;
       aux=fgetc(F);//Leemos el primer caracter de una linea y el cursor se queda tras ella, en este caso nos indica si esta linea/estado es final o no.
       if(aux=='n') traductor[i].esFinal=FALSE;
@@ -191,7 +203,7 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
           n=atoi(temp);
           asignarMemoriaTransTraduDest(n,i);//Como ya sabemos el numero de transiciones de esta linea/estado (mediante atoi que pasa '123'char a 123 int ya podemos asignar el tamaño a los diferentes vectores dinamicos.
           //Tras salir del for tenemos en aux el simbolo de la primera transicion, de esta linea/estado.
-          vaciar(temp);//reseteamos temp.
+          vaciar(temp,MAX);//reseteamos temp.
           fgets(temp,MAX,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
           //fscanf(F,"%s",temp);
           meterCharAlPrincpio(aux,temp);
@@ -206,10 +218,10 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
  fclose(F);
 }
 
-void vaciar(char c[])
+void vaciar(char c[],int tam)
 {
     int i;
-    for(i=0;i<0;i++)
+    for(i=0;i<tam;i++)
      {
         c[i]='\0';
      }
@@ -259,7 +271,7 @@ void rellenarVectores(char temp[],int i,int n)
              }
             else if(temp[k]==':')//Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
              {
-                vaciar(numTraduccion);
+                vaciar(numTraduccion,3);
                 t=0;
                 for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)
                  {
@@ -268,15 +280,13 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 t=0;
                 num=atoi(numTraduccion);
-                 puts(numTraduccion);
-                printf("---%d\n",num);
                 traductor[i].destinos[j]=num;
                 //Ahora temp[k] esta en la posicion de ',' o '\0'; restamos 1 a 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
                 k--;
              }
             else if(temp[k]!='!'&&temp[k]!='/')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
              {
-                vaciar(numTraduccion);
+                vaciar(numTraduccion,3);
                 for(m=k;temp[m]>='0'&&temp[m]<='9';m++)//Ya que pueden existir mas de 9 simbolos de traduccion
                  {
                    numTraduccion[t]=temp[m];
@@ -292,7 +302,6 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 traductor[i].cad[j].tamTraduccion=num;//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
-                printf("ES PUNTO%c\n",temp[m]);
                 m++;
                 t=m+num;
                 r=0;
@@ -303,23 +312,16 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 t=0;
                 k=m+num;
-                printf("\n CUANTO ES K%d",k);
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
                 t=0;
-                printf("***\n");
-                printf("ES DOS PUNTOS%c\n",temp[k]);
-                 printf("ES numero %c\n",temp[k+1]);
-                vaciar(numTraduccion);
+                vaciar(numTraduccion,3);
                 for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)
                  {
                      numTraduccion[t]=temp[k];
                      t++;
-                     printf("%d\n",numTraduccion[t]);
                  }
                 t=0;
                 num=atoi(numTraduccion);
-                puts(temp);
-                printf("+++%d\n",num);
                 traductor[i].destinos[j]=num;
                 //Ahora temp[k] esta en la posicion  de ',' o '\0'; restamos 1 a 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
                 k--;
