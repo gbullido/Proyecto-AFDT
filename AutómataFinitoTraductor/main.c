@@ -17,6 +17,8 @@ void rellenarVectores(char temp[],int i,int n);//rellena los vectores dinamicos 
 
 void meterCharAlPrincpio(char aux,char temp[]);//mete un char al princpio de temp sin borrar nada
 
+int tieneTransicion(char c,int estadoActual);//Busca para un simbolo si hay transicion en un estado
+
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
 	FALSE, TRUE
@@ -47,10 +49,13 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado.
 //###################################################################################################################################################
 int main()
 {
-    int i,j,m,respuesta=0,opcion,n;
+    int i,j,m,respuesta=0,opcion,n,estadoActual,posT,posS,tamS;
     char *palabra,*salida;
     borrarConsola();
     do{
+        estadoActual=0;
+        posS=0;
+        tamS=0;
         borrarConsola();
         opcion=imprimirMenu();
         aperturaFichero(opcion);
@@ -92,23 +97,63 @@ int main()
            exit (1);
         }
        vaciar(palabra,n);
-       //*salida = realloc(salida,cl*sizeof(char));
        printf("Introduce una palabra reconocida por el lenguaje L del apartado %d del enunciado con %d simbolos.\n",opcion,n);
        printf("NOTA: Si introduce menos simbolos de los guardados se consideraran Epsilon los restantes\n");
        scanf("%s", palabra);
-       if(n==0);
+       if(n==0)
         {
            if(traductor[0].esFinal==TRUE) printf("TRADUCCION: Palabra vacia (Epsilon)\n");
            else printf("NO HAY TRADUCCION: La palabra vacia (Epsilon) no pertenece a L\n");
         }
        else
         {
-           for(i=0;i<n;i++)
+           for(i=0;i<n;i++)//recorremos la palabra
             {
-
+                posT=tieneTransicion(palabra[i]);
+                if(posT!=-1)//Hay transiccion con el simbolo actual.
+                   {
+                       salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
+                       tamS=tamS+traductor[estadoActual].cad[posT].tamTraduccion;
+                       if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
+                        {
+                           printf("No se ha podido reservar la memoria para la traduccion, vuelva a intentarlo.\n");
+                           exit (1);
+                        }
+                       for(j=0;j<traductor[estadoActual].cad[posT].tamTraduccion;j++)//actualizamos la traduccion
+                        {
+                            salida[posS]=traductor[estadoActual].cad[posT].traduccion[j];
+                            posS++;
+                        }
+                       estadoActual=traductor[estadoActual].destinos[posT];
+                   }
+                else
+                   {
+                       if(palabra[i]=='\0')//Se han introducido menos simbolos a los dichos
+                        {
+                           i=n-1;
+                        }
+                       else//un simbolo no pertenece a L
+                        {
+                           n=n-1;
+                        }
+                   }
+            }
+           if(i==n&&traductor[estadoActual].esFinal==TRUE)
+            {
+               printf("TRADUCCION: ");
+               for(m=0;m<tamS;m++)
+                {
+                  printf("%c",salida[m]);
+                }
+            }
+           else
+            {
+               printf("No existe traduccion, la palabra dada no pertenece a L\n");
             }
         }
        free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+       free(palabra);//liberamos memoria para ya que se ha elegido un automata diferente
+       free(salida);//liberamos memoria para ya que se ha elegido un automata diferente
     }while(respuesta!=0);
 
     return 0;
@@ -343,6 +388,11 @@ void meterCharAlPrincpio(char aux,char temp[])
        aux=temp2;
      }
      printf("\n\n");
+}
+
+int tieneTransicion(char c,int estadoActual)
+{
+
 }
 
 
