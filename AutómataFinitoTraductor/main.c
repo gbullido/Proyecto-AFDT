@@ -150,10 +150,6 @@ int main()
                       }
                    }
                }
-              printf("%d == %d\n",i,n);
-              printf("%d\n",estadoActual);
-              printf("%s\n",salida);
-
               if(i==n&&traductor[estadoActual].esFinal==TRUE)
                {
                  printf("TRADUCCION: ");
