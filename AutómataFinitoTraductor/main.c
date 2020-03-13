@@ -268,6 +268,8 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 t=0;
                 num=atoi(numTraduccion);
+                 puts(numTraduccion);
+                printf("---%d\n",num);
                 traductor[i].destinos[j]=num;
                 //Ahora temp[k] esta en la posicion de ',' o '\0'; restamos 1 a 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
                 k--;
@@ -290,6 +292,7 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 traductor[i].cad[j].tamTraduccion=num;//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
+                printf("ES PUNTO%c\n",temp[m]);
                 m++;
                 t=m+num;
                 r=0;
@@ -299,16 +302,24 @@ void rellenarVectores(char temp[],int i,int n)
                    r++;
                  }
                 t=0;
-                k=m+1+num;
+                k=m+num;
+                printf("\n CUANTO ES K%d",k);
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
                 t=0;
+                printf("***\n");
+                printf("ES DOS PUNTOS%c\n",temp[k]);
+                 printf("ES numero %c\n",temp[k+1]);
+                vaciar(numTraduccion);
                 for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)
                  {
                      numTraduccion[t]=temp[k];
                      t++;
+                     printf("%d\n",numTraduccion[t]);
                  }
                 t=0;
                 num=atoi(numTraduccion);
+                puts(temp);
+                printf("+++%d\n",num);
                 traductor[i].destinos[j]=num;
                 //Ahora temp[k] esta en la posicion  de ',' o '\0'; restamos 1 a 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
                 k--;
