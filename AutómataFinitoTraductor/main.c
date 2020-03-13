@@ -109,7 +109,7 @@ int main()
         {
            for(i=0;i<n;i++)//recorremos la palabra
             {
-                posT=tieneTransicion(palabra[i]);
+                posT=tieneTransicion(palabra[i],estadoActual);
                 if(posT!=-1)//Hay transiccion con el simbolo actual.
                    {
                        salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
@@ -392,7 +392,12 @@ void meterCharAlPrincpio(char aux,char temp[])
 
 int tieneTransicion(char c,int estadoActual)
 {
-
+    int i;
+    for(i=0;i<traductor[estadoActual].numeroTransiciones;i++)
+     {
+       if(c==traductor[estadoActual].transiciones[i]) return i;
+     }
+    return -1;
 }
 
 
