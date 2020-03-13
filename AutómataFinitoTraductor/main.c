@@ -113,9 +113,18 @@ int main()
            for(i=0;i<n;i++)//recorremos la palabra
             {
                 posT=tieneTransicion(palabra[i],estadoActual);
-                if(posT!=-1)//Hay transiccion con el simbolo actual.
+                printf("pepeeeeeee\n");
+                if(posT>=0)//Hay transiccion con el simbolo actual.
                    {
-                       salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
+
+                       if(i==0)
+                       {
+                           salida = (char*)malloc(traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
+                       }
+                       else
+                       {
+                           if(traductor[estadoActual].cad[posT].tamTraduccion!=0) salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));
+                       }
                        tamS=tamS+traductor[estadoActual].cad[posT].tamTraduccion;
                        if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
                         {
