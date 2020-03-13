@@ -113,7 +113,6 @@ int main()
            for(i=0;i<n;i++)//recorremos la palabra
             {
                 posT=tieneTransicion(palabra[i],estadoActual);
-                printf("pepeeeeeee\n");
                 if(posT>=0)//Hay transiccion con el simbolo actual.
                    {
 
