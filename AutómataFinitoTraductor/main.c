@@ -17,6 +17,8 @@ void rellenarVectores(char temp[],int i,int n);//rellena los vectores dinamicos 
 
 void meterCharAlPrincpio(char aux,char temp[]);//mete un char al princpio de temp sin borrar nada
 
+void aislarCadena(int i,int f,char temp[MAX],char tr[]);
+
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
 	FALSE, TRUE
@@ -65,8 +67,8 @@ int main()
                   {
                      printf("\t\t- Transicion %d\n",j);
                      printf("\t\t\t- Mediante el simbolo '%c'\n",traductor[i].transiciones[j]);
-                     printf("\t\t\t- Estado destino '%c'\n",traductor[i].destinos[j]);
-                     printf("\t\t\t- Traduccion %c -----> %s\n",traductor[i].transiciones[j],traductor[i].cad[j].traduccion);
+                     printf("\t\t\t- Estado destino '%d'\n",traductor[i].destinos[j]);
+                     printf("\t\t\t- Traduccion %c --> %s\n",traductor[i].transiciones[j],traductor[i].cad[j].traduccion);
                   }
              }
         }
@@ -216,16 +218,16 @@ void rellenarVectores(char temp[],int i,int n)
 {
  printf("LLEGAS AQUI************************************?\n");
  printf(temp);
- printf("\n");
- int j,k,m,t=0;
+ printf("numero transiciones:%d numero de estado: %d\n",n,i);
+ int j,k=0,m,num,t=0;
  char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
-        for(k=0;temp[k]!=','&&'\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con '/', por lo que empezamos por la siguiente posicion que sera '!' o el numero de simbolos de traduccion
+        traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion
+        for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con la '/' de transicion
          {
-            traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion
             if(temp[k]=='!')
-            {
+             {
                 traductor[i].cad[j].traduccion = (char*)malloc(0*sizeof(char));//Asignamos cero memoria ya que no hay traduccion para esta transicion
                 if(traductor[i].cad[j].traduccion==NULL)//Comprobamos que se reservo la memoria correctamente
                  {
@@ -233,7 +235,22 @@ void rellenarVectores(char temp[],int i,int n)
                     exit (1);
                  }
                 traductor[i].cad[j].tamTraduccion=0;
-            }
+             }
+            else if(temp[k]==':')//Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
+             {
+                vaciar(numTraduccion);
+                t=0;
+                for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)
+                 {
+                     numTraduccion[t]=temp[k];
+                     t++;
+                 }
+                t=0;
+                num=atoi(numTraduccion);
+                traductor[i].destinos[j]=num;
+                //Ahora temp[k] esta en la posicion de ',' o '\0'; restamos 1 a 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
+                k--;
+             }
             else if(temp[k]!='!'&&temp[k]!='/')//La transicion si tiene traduccion, temp[k] tiene el primer simbolo del numero de simbolos de la traduccion
              {
                 vaciar(numTraduccion);
@@ -243,26 +260,46 @@ void rellenarVectores(char temp[],int i,int n)
                    t++;
                  }
                 t=0;
-                traductor[i].cad[j].traduccion = (char*)malloc(atoi(numTraduccion)*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
+                num=atoi(numTraduccion);
+                traductor[i].cad[j].traduccion = (char*)malloc(num*sizeof(char));//Asignamos memoria ya que sabemos el numero de simbolos de traduccion para esta transicion
                 if(traductor[i].cad[j].traduccion==NULL)//Comprobamos que se reservo la memoria correctamente
                  {
                     printf("No se ha podido reservar la memoria, para la traduccion de la transicion %d del estado %d.\n",j,traductor[i].nombreEstado);
                     exit (1);
                  }
-                traductor[i].cad[j].tamTraduccion=atoi(numTraduccion);//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
+                traductor[i].cad[j].tamTraduccion=num;//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
-                for(k=m+1;temp[k]!=':';k++)
+                char tr[num];
+                printf("11111111111\n\n");
+                puts(tr);
+                m++;
+                t=m+num;
+                printf("22222222\n\n");
+                puts(tr);
+                aislarCadena(m,t,temp,tr);
+                t=0;
+                printf("33333333\n\n");
+                puts(tr);
+                strcpy(traductor[i].cad[j].traduccion,tr);
+                /*for(k=m+1;temp[k]!=':';k++)
                  {
                      traductor[i].cad[j].traduccion[t]=temp[k];
                      t++;
                  }
-                t=0;
+                t=0;*/
+                k=m+1+num;
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
-                vaciar(numTraduccion);
-                k++;
-                numTraduccion[0]=temp[k];
-                traductor[i].destinos[j]=atoi(numTraduccion);
-                //Ahora temp[k] esta en la posicion ANTES de ',' o '\0'; dejamos 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
+                t=0;
+                for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)
+                 {
+                     numTraduccion[t]=temp[k];
+                     t++;
+                 }
+                t=0;
+                num=atoi(numTraduccion);
+                traductor[i].destinos[j]=num;
+                //Ahora temp[k] esta en la posicion  de ',' o '\0'; restamos 1 a 'k' asi ya que tras llegar a '}' el contador del for hara 'k++', y ya no se cumplira la condicion y saldra del for.
+                k--;
              }
          }
         //Ahora temp[k] esta en la posicion de ',' o '\0'; si hay otra transicion ya que 'n'>1 queremos que temp[k] sea la posicion del simbolo de la siguiente transicion para que el for de 'k' se complete con normalidad.
@@ -274,7 +311,6 @@ void meterCharAlPrincpio(char aux,char temp[])
 {
     char temp2;
     int i;
-    puts(temp);
     for(i=0;i<MAX;i++)
      {
        temp2=temp[i];
@@ -282,7 +318,16 @@ void meterCharAlPrincpio(char aux,char temp[])
        aux=temp2;
      }
      printf("\n\n");
-     puts(temp);
+}
+
+void aislarCadena(int i,int f,char temp[MAX],char tr[])
+{
+    int j,k=0;
+    for(j=i;j<=f;j++)
+     {
+        tr[j]=temp[j];
+        k++;
+     }
 }
 
 
