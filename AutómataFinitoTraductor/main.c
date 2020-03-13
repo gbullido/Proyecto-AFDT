@@ -93,13 +93,16 @@ int main()
        palabra = (char*)malloc(n*sizeof(char));
        if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
         {
-           printf("No se ha podido reservar la memoria, para su palabra vuelva a intentarlo.\n");
+           printf("No se ha podido reservar la memoria para su palabra vuelva a intentarlo.\n");
            exit (1);
         }
        vaciar(palabra,n);
-       printf("Introduce una palabra reconocida por el lenguaje L del apartado %d del enunciado con %d simbolos.\n",opcion,n);
-       printf("NOTA: Si introduce menos simbolos de los guardados se consideraran Epsilon los restantes\n");
-       scanf("%s", palabra);
+       if(n!=0)
+       {
+          printf("Introduce una palabra reconocida por el lenguaje L del apartado %d del enunciado con %d simbolos.\n",opcion,n);
+          printf("NOTA: Si introduce menos simbolos de los guardados se consideraran Epsilon los restantes\n");
+          scanf("%s", palabra);
+       }
        if(n==0)
         {
            if(traductor[0].esFinal==TRUE) printf("TRADUCCION: Palabra vacia (Epsilon)\n");
@@ -141,10 +144,14 @@ int main()
            if(i==n&&traductor[estadoActual].esFinal==TRUE)
             {
                printf("TRADUCCION: ");
-               for(m=0;m<tamS;m++)
+               if(tamS==0) printf("Palabra vacia (Epsilon)")
+               else
+               {
+                for(m=0;m<tamS;m++)
                 {
                   printf("%c",salida[m]);
                 }
+               }
             }
            else
             {
