@@ -17,7 +17,7 @@ void rellenarVectores(char temp[],int i,int n);//rellena los vectores dinamicos 
 
 void meterCharAlPrincpio(char aux,char temp[]);//mete un char al princpio de temp sin borrar nada
 
-void aislarCadena(int i,int f,char temp[MAX],char tr[]);
+//void aislarCadena(int i,int f,char temp[MAX],char tr[]);
 
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
@@ -49,7 +49,7 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado.
 //###################################################################################################################################################
 int main()
 {
-    int i,j,respuesta=0;
+    int i,j,m,respuesta=0;
     //borrarConsola();
     do{
         aperturaFichero(imprimirMenu());
@@ -68,7 +68,16 @@ int main()
                      printf("\t\t- Transicion %d\n",j);
                      printf("\t\t\t- Mediante el simbolo '%c'\n",traductor[i].transiciones[j]);
                      printf("\t\t\t- Estado destino '%d'\n",traductor[i].destinos[j]);
-                     printf("\t\t\t- Traduccion %c --> %s\n",traductor[i].transiciones[j],traductor[i].cad[j].traduccion);
+                     printf("\t\t\t- Traduccion %c --> ",traductor[i].transiciones[j]);
+                     if(traductor[i].cad[j].tamTraduccion!=0)
+                      {
+                         for(m=0;m<traductor[i].cad[j].tamTraduccion;m++)
+                          {
+                             printf("%c",traductor[i].cad[j].traduccion[m]);
+                          }
+                         printf("\n");
+                      }
+                     else printf("palabra vacia (Epsilon/Lambda)\n");
                   }
              }
         }
@@ -216,10 +225,7 @@ void asignarMemoriaTransTraduDest(int n,int i)
 
 void rellenarVectores(char temp[],int i,int n)
 {
- printf("LLEGAS AQUI************************************?\n");
- printf(temp);
- printf("numero transiciones:%d numero de estado: %d\n",n,i);
- int j,k=0,m,num,t=0;
+ int j,k=0,m,num,t=0,h,r;
  char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
@@ -269,24 +275,20 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 traductor[i].cad[j].tamTraduccion=num;//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
-                char tr[num];
-                printf("11111111111\n\n");
-                puts(tr);
+                //char tr[num];
+                //vaciar(tr);
                 m++;
                 t=m+num;
-                printf("22222222\n\n");
-                puts(tr);
-                aislarCadena(m,t,temp,tr);
-                t=0;
-                printf("33333333\n\n");
-                puts(tr);
-                strcpy(traductor[i].cad[j].traduccion,tr);
-                /*for(k=m+1;temp[k]!=':';k++)
+                r=0;
+                for(h=m;h<=t;h++)
                  {
-                     traductor[i].cad[j].traduccion[t]=temp[k];
-                     t++;
+                   traductor[i].cad[j].traduccion[r]=temp[h];
+                   r++;
                  }
-                t=0;*/
+                //aislarCadena(m,t,temp,tr);
+                t=0;
+                //strcpy(traductor[i].cad[j].traduccion,tr);
+                //puts(tr);
                 k=m+1+num;
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
                 t=0;
@@ -320,14 +322,14 @@ void meterCharAlPrincpio(char aux,char temp[])
      printf("\n\n");
 }
 
-void aislarCadena(int i,int f,char temp[MAX],char tr[])
+/*void aislarCadena(int i,int f,char temp[MAX],char tr[])
 {
     int j,k=0;
     for(j=i;j<=f;j++)
      {
-        tr[j]=temp[j];
+        traductor[i].cad[j].traduccion[k]=temp[j];
         k++;
      }
-}
+}*/
 
 
