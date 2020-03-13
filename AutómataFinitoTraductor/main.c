@@ -17,8 +17,6 @@ void rellenarVectores(char temp[],int i,int n);//rellena los vectores dinamicos 
 
 void meterCharAlPrincpio(char aux,char temp[]);//mete un char al princpio de temp sin borrar nada
 
-//void aislarCadena(int i,int f,char temp[MAX],char tr[]);
-
 enum Boolean//Los boleanos no existen en C tienes que crearlos.
 {
 	FALSE, TRUE
@@ -49,11 +47,14 @@ AFDT *traductor;//Vector dinamico de tipo AFDT cada posicion es un estado.
 //###################################################################################################################################################
 int main()
 {
-    int i,j,m,respuesta=0;
-    //borrarConsola();
+    int i,j,m,respuesta=0,opcion;
+    char palabra[MAX];
+    borrarConsola();
     do{
-        aperturaFichero(imprimirMenu());
-        printf("\n\t\tEL AFDT TIENE %d ESTADOS\n",traductor[0].numeroEstadosAFDT);
+        borrarConsola();
+        opcion=imprimirMenu();
+        aperturaFichero(opcion);
+        printf("\n\t\tEL AFDT %d TIENE %d ESTADOS\n",opcion,traductor[0].numeroEstadosAFDT);
         printf("\nDESGLOSE DE ESTADOS:\n");
         for(i=0;i<traductor[0].numeroEstadosAFDT;i++)
         {
@@ -77,11 +78,25 @@ int main()
                           }
                          printf("\n");
                       }
-                     else printf("palabra vacia (Epsilon/Lambda)\n");
+                     else printf("palabra vacia (Epsilon)\n");
                   }
              }
         }
-        free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
+       vaciar(palabra);
+       printf("Introduce una palabra reconocida por el lenguaje L del %dº apartado del enunciado.\n",opcion);
+       printf("NOTA: Si solo se quiere enviar la palabra vacia (Epsilon), pulse ENTER.");
+       printf("Introduzca su palabra (maximo 50 simbolos):");
+       gets(palabra);
+       if(strlen(palabra)==0)
+        {
+           if(traductor[0].esFinal==TRUE) printf("TRADUCCION: Palabra vacia (Epsilon)\n");
+           else printf("NO HAY TRADUCCION: La palabra vacia (Epsilon) no pertenece a L\n");
+        }
+       /*else
+        {
+           for(i)
+        }*/
+       free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
     }while(respuesta!=0);
 
     return 0;
@@ -275,8 +290,6 @@ void rellenarVectores(char temp[],int i,int n)
                  }
                 traductor[i].cad[j].tamTraduccion=num;//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
-                //char tr[num];
-                //vaciar(tr);
                 m++;
                 t=m+num;
                 r=0;
@@ -285,10 +298,7 @@ void rellenarVectores(char temp[],int i,int n)
                    traductor[i].cad[j].traduccion[r]=temp[h];
                    r++;
                  }
-                //aislarCadena(m,t,temp,tr);
                 t=0;
-                //strcpy(traductor[i].cad[j].traduccion,tr);
-                //puts(tr);
                 k=m+1+num;
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
                 t=0;
@@ -321,15 +331,5 @@ void meterCharAlPrincpio(char aux,char temp[])
      }
      printf("\n\n");
 }
-
-/*void aislarCadena(int i,int f,char temp[MAX],char tr[])
-{
-    int j,k=0;
-    for(j=i;j<=f;j++)
-     {
-        traductor[i].cad[j].traduccion[k]=temp[j];
-        k++;
-     }
-}*/
 
 
