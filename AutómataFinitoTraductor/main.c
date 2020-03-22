@@ -79,10 +79,11 @@ int main()
                       printf("\t\t\t- Traduccion %c --> ",traductor[i].transiciones[j]);
                       if(traductor[i].cad[j].tamTraduccion!=0)
                        {
-                         for(m=0;m<traductor[i].cad[j].tamTraduccion;m++)
+                         /*for(m=0;m<traductor[i].cad[j].tamTraduccion;m++)
                           {
                              printf("%c",traductor[i].cad[j].traduccion[m]);
-                          }
+                          }*/
+                         puts(traductor[i].cad[j].traduccion);
                          printf("\n");
                        }
                       else printf("palabra vacia (Epsilon)\n");
@@ -178,9 +179,9 @@ int main()
                fflush( stdin );
                scanf("%d",&respuesta);
              }
-          }while(respuesta==1);
+          }while(respuesta==1);//Mismo AFDT elegido
         free(traductor);//liberamos memoria para ya que se ha elegido un automata diferente
-      }while(respuesta==2);
+      }while(respuesta==2);//Cambiar de AFDT
     return 0;
 }
 
@@ -299,6 +300,7 @@ void vaciar(char c[],int tam)
 
 void asignarMemoriaTransTraduDest(int n,int i)
 {
+    traductor[i].numeroTransiciones=n;//Guardamos el numero de transiciones que sera = traducciones y = destinos.
     traductor[i].transiciones = (char*)malloc(n*sizeof(char));
     if(traductor[i].transiciones==NULL)//Comprobamos que se reservo la memoria correctamente
      {
@@ -317,13 +319,12 @@ void asignarMemoriaTransTraduDest(int n,int i)
         printf("No se ha podido reservar la memoria para los destinos del estado %d.\n",traductor[i].nombreEstado);
         exit (1);
      }
-    traductor[i].numeroTransiciones=n;//Guardamos el numero de transiciones que sera = traducciones e = destinos.
 }
 
 void rellenarVectores(char temp[],int i,int n)
 {
  int j,k=0,m,num,t=0,h,r;
- char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caacter destino.
+ char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caracter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
         traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion
