@@ -79,11 +79,10 @@ int main()
                       printf("\t\t\t- Traduccion %c --> ",traductor[i].transiciones[j]);
                       if(traductor[i].cad[j].tamTraduccion!=0)
                        {
-                         /*for(m=0;m<traductor[i].cad[j].tamTraduccion;m++)
+                         for(m=0;m<traductor[i].cad[j].tamTraduccion;m++)//No utilizo puts porque imprime caracteres que no existen (a veces)
                           {
                              printf("%c",traductor[i].cad[j].traduccion[m]);
-                          }*/
-                         puts(traductor[i].cad[j].traduccion);
+                          }
                          printf("\n");
                        }
                       else printf("palabra vacia (Epsilon)\n");
@@ -120,7 +119,7 @@ int main()
 
                      if(i==0)
                       {
-                         salida = (char*)malloc(traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
+                         salida = (char*)malloc(traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion de 'palabra'
                       }
                      else if (traductor[estadoActual].cad[posT].tamTraduccion!=0)
                       {
@@ -132,12 +131,17 @@ int main()
                         printf("No se ha podido reservar la memoria para la traduccion, vuelva a intentarlo.\n");
                         exit (1);
                       }
-                     for(j=0;j<traductor[estadoActual].cad[posT].tamTraduccion;j++)//actualizamos la traduccion
+                     for(j=0;j<traductor[estadoActual].cad[posT].tamTraduccion;j++)//Metemos la traduccion de la letra 'palabra[i]', en 'salida'
                       {
                          salida[posS]=traductor[estadoActual].cad[posT].traduccion[j];
                          posS++;
+                         /*
+                         No utilizamos 'strcpy(salida,traductor[estadoActual].cad[posT].traduccion)' porque sobre escribe en salida
+                         y no utilizamos strcat(salida, traductor[estadoActual].cad[posT].traduccion)' porque concatena desde la
+                         ultima posicion de salida que le hemosañadido antes con realloc(), y no desde la ultima letra añadida.
+                         */
                       }
-                     estadoActual=traductor[estadoActual].destinos[posT];
+                     estadoActual=traductor[estadoActual].destinos[posT];//Pasamos al estado destino como estadoActual para la siguiente iteraccion (si hay).
                    }
                  else
                    {
@@ -145,7 +149,7 @@ int main()
                       {
                          i=n-1;
                       }
-                     else//un simbolo no pertenece a L
+                     else//un simbolo no pertenece a L, pues 'estadoActual' no tiene transicion con 'palabra[i]'
                       {
                          n=-1;
                       }
@@ -255,7 +259,7 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
     exit (1);
   }
  traductor[0].numeroEstadosAFDT=cont;//Guardamos el numero de estados de AFDT pra luego poder recorrerlo.
- for(i=0; !feof(F); i++)
+ for(i=0; !feof(F); i++)//Cadaiteraccion es una linea estado
    {
       vaciar(temp,MAX);//Primeros debemos vaciar temp.
       traductor[i].nombreEstado=i;
@@ -276,7 +280,6 @@ void aperturaFichero(int opcion)//################## APERTURA DE FICHERO #######
           //Tras salir del for tenemos en aux el simbolo de la primera transicion, de esta linea/estado.
           vaciar(temp,MAX);//reseteamos temp.
           fgets(temp,MAX,F);//Lee toda la linea y deja el cursor al inicio de la siguiente o EOF
-          //fscanf(F,"%s",temp);
           meterCharAlPrincpio(aux,temp);
           rellenarVectores(temp,i,n);
        }
@@ -323,12 +326,12 @@ void asignarMemoriaTransTraduDest(int n,int i)
 
 void rellenarVectores(char temp[],int i,int n)
 {
- int j,k=0,m,num,t=0,h,r;
+ int j,k=0,m,num,t=0,r;
  char numTraduccion[3];//Para guardar el numero de simbolos de una traduccion para depues transformarlo a int, y lo mismo para el caracter destino.
  for(j=0;j<n;j++)//for de numero de transiciones del estado 'i'
   {
         traductor[i].transiciones[j]=temp[k];//metemos el simbolo de la transicion
-        for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)//for para recorrer una de las 'n' transiciones de temp que empieza con la '/' de transicion
+        for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)//for para recorrer temp[] que dentor tiene las 'n' transiciones de uan estado. Empieza con la '/' de transicion
          {
             if(temp[k]=='!')
              {
@@ -374,19 +377,18 @@ void rellenarVectores(char temp[],int i,int n)
                 traductor[i].cad[j].tamTraduccion=num;//Guardamos el numero de simbolos de la traduccion de la transicion 'j', para luego poder recorrerla.
                 //Ahora temp[m] esta en la posicion centinela '.', es decir lo proximo es analizar la traduccion, actualizamos el indice 'k' para pasar al primer simbolo de traduccion.
                 m++;
-                t=m+num;
+                //temp[m] esta en el primer simbolo de la traduccion
+                k=m+num;
+                //temp[k] esta en la posicion ':'
                 r=0;
-                for(h=m;h<=t;h++)
+                for(m;m<k;m++)
                  {
-                   traductor[i].cad[j].traduccion[r]=temp[h];
+                   traductor[i].cad[j].traduccion[r]=temp[m];
                    r++;
                  }
-                t=0;
-                k=m+num;
                 //Ahora temp[k], esta en ':', tenemos que leer el destino que esta en k+1 y guardarlo en el struct, actualizamos k.
-                t=0;
                 vaciar(numTraduccion,3);
-                for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)
+                for(k=k+1;temp[k]!=','&&temp[k]!='\0';k++)//El destino sera un numero, paramos con ',' o '\0', ya que puede haber otra trasicion o ser la ultima de este estado 'i'.
                  {
                      numTraduccion[t]=temp[k];
                      t++;
