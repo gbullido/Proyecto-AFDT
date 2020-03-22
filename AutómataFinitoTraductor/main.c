@@ -121,9 +121,9 @@ int main()
                       {
                          salida = (char*)malloc(traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));//asignamos nueva memoria a la traduccion
                       }
-                     else
+                     else if (traductor[estadoActual].cad[posT].tamTraduccion!=0)
                       {
-                         if(traductor[estadoActual].cad[posT].tamTraduccion!=0) salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));
+                         salida = (char*)realloc(salida,traductor[estadoActual].cad[posT].tamTraduccion*sizeof(char));
                       }
                      tamS=tamS+traductor[estadoActual].cad[posT].tamTraduccion;
                      if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
