@@ -91,6 +91,12 @@ int main()
              }
             printf("\n\nIntroduzca el numero de simbolos que va introducir (0 seria Epsilon):");
             scanf("%d", &n);
+            while(n<0)
+             {
+               printf("\nHa introducido un numero negativo porfavor introduzca un numero >= 0: ");
+               fflush( stdin );
+               scanf("%d",&n);
+            }
             palabra = (char*)malloc(n*sizeof(char));
             if(palabra==NULL)//Comprobamos que se reservo la memoria correctamente
              {
@@ -178,7 +184,7 @@ int main()
             free(salida);//liberamos memoria
             printf("%cQuiere otra seguir probando el mismo AFDT(1), o cambiar de AFDT(2) o finalizar(0)?: ",168);//168==¿, pero si pongo '¿' me imprime otro signo
             scanf("%d",&respuesta);
-            while(respuesta>2 || respuesta<0)
+            while(respuesta>2 || respuesta<0)//Comprobamos que se ha introducido un opcion permitida y no otro caracter
              {
                printf("\nEsa opcion no existe, porfavor introduzca 1 o 2 o 0 si quiere probar el mismo AFDT, cambiar de AFDT\no finalizar, respectivamente: ");
                fflush( stdin );
