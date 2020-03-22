@@ -148,14 +148,15 @@ int main()
                      if(palabra[i]=='\0')//Se han introducido menos simbolos a los dichos
                       {
                          i=n-1;
+                         //Asi salimos ya del bucle ya que no tiene sentido seguir recorriendo '\0', pero la palabra si tiene traduccion
                       }
                      else//un simbolo no pertenece a L, pues 'estadoActual' no tiene transicion con 'palabra[i]'
                       {
-                         n=-1;
+                         n=-1;//Asi saldremos del bucle ya que ya no tiene sentido seguir rrecorriendo la palabra
                       }
                    }
                }
-              if(i==n&&traductor[estadoActual].esFinal==TRUE)
+              if(i==n&&traductor[estadoActual].esFinal==TRUE)//Hemos reccorido toda la palabra eso significa que 'palabra' pertenece a L y tiene traduccion
                {
                  printf("TRADUCCION: ");
                  if(tamS==0) printf("Palabra vacia (Epsilon)\n\n");
@@ -425,7 +426,7 @@ int tieneTransicion(char c,int estadoActual)
      {
        if(c==traductor[estadoActual].transiciones[i]) return i;
      }
-    return -1;
+    return -1;//'estadoActual' no tiene trasiciones con el simbolo 'c'
 }
 
 
