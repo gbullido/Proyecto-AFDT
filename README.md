@@ -1,2 +1,2 @@
-# Practica-1-TLP
-Se desarrollara un AFDT
+# AFDT
+Se desarrollara un AFDT, Automata Finito Determinista Traductor.
